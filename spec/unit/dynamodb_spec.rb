@@ -5,7 +5,10 @@ require 'locksy/dynamodb'
 describe Locksy::DynamoDB do
   def create_aws_client
     # run against a local docker dynamodb instance
-    @client ||= Locksy::DynamoDB.create_client(endpoint: 'http://localhost:8000')
+    @client ||= Locksy::DynamoDB.create_client(region: 'local',
+                                               access_key_id: 'local',
+                                               secret_access_key: 'local',
+                                               endpoint: 'http://localhost:8000')
     # run against real dynamodb, using environment credentials
     # @client ||= Locksy::DynamoDB.create_client
   end
