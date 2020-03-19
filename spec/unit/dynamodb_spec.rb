@@ -18,7 +18,7 @@ describe Locksy::DynamoDB do
   end
 
   subject(:instance) { generate_instance init_args.merge(owner: 'owner1') }
-  let(:other_owner) { generate_instance init_args.merge(owner: 'owner2') }
+  let(:other_owner) { generate_instance init_args.merge(owner: 'owner2', default_expiry: 0.1) }
   let(:other_named_lock) { generate_instance init_args.merge(lock_name: 'other_lock') }
   let(:init_args) \
     { { table_name: 'test-lock-table', dynamo_client: dynamo_client, lock_name: lock_name } }

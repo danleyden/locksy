@@ -42,7 +42,7 @@ shared_examples 'a lock' do
         end
 
         context 'and the caller is willing to wait for the lock' do
-          let(:times) { Array.new(20, 20).append(1000) }
+          let(:times) { Array.new(18, 20).append(1000) }
           it { expect { instance.obtain_lock(wait_for: 0.00000001) }.not_to raise_error }
         end
       end
