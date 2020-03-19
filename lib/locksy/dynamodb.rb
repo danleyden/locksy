@@ -22,6 +22,7 @@ module Locksy
     def obtain_lock(expire_after: default_expiry, wait_for: nil, **_args)
       stop_waiting_at = wait_for ? now + wait_for : nil
       expire_at = expiry(expire_after)
+      logger.debug "trying to obtain lock #{lock_name} for #{owner} to be held until #{expire_at}"
       dynamo_client.put_item \
         ({ table_name: table_name,
            item: { id: lock_name, expires: expire_at, lock_owner: owner },
@@ -35,12 +36,14 @@ module Locksy
         # current lock expires or the remaining time from the what the
         # caller was willing to wait, subject to a minimum of 0.1s to
         # prevent busy looping.
-        _wait_for_timeout \
-          ( if (current = retrieve_current_lock).nil?
-              0.1
-            else
-              [stop_waiting_at - now, [(current[:expires] - now) / 2, 0.1].max].min
-            end)
+        if (current = retrieve_current_lock).nil?
+          retry_wait = 0.1
+        else
+          retry_wait = [stop_waiting_at - now, [(current[:expires] - now) / 2, 0.1].max].min
+        end
+        logger.debug "Attempt to acquire lock #{lock_name} for #{owner} failed - "\
+          "will retry in #{retry_wait}s"
+        _wait_for_timeout retry_wait
         retry unless self.class.shutting_down?
       end
       raise build_not_owned_error_from_remote

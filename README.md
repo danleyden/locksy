@@ -33,6 +33,16 @@ but does not provide protection when multiple processes are involved and use the
 To avoid loading many unnecessary dependencies for all implementaitons, it is necessary
 to `require` the lock implementation that you actually need from within your code.
 
+Logging
+=======
+
+Locksy does some logging, which by default, will push to STDOUT. If you want to control
+the logging, you can either provide an instance of a logger object that meets the ruby
+logger interface in to the lock instance (`lock.logger = logger`) or you can control it
+for all lock instances by passing in a logger object by calling `Locksy.logger = logger`.
+
+To make locksy less chatty, things like `Locksy.logger = ::Logger.WARN` also work.
+
 
 Dynamo DB locks
 ===============

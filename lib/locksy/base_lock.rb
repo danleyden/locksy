@@ -58,7 +58,7 @@ module Locksy
     end
 
     def logger
-      @logger ||= Logger.new
+      @logger || Locksy.logger
     end
 
     def expiry(after)
