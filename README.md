@@ -56,3 +56,12 @@ To get set up, install docker then:
 docker pull amazon/dynamodb-local
 docker run -p 8000:8000 amazon/dynamodb-local
 ```
+
+Then set Locksy to use your local Dynamo DB instance:
+```ruby
+require 'locksy/dynamodb'
+
+dynamo_client = Aws::DynamoDB::Client.new(endpoint: 'http://localhost:8000')
+
+lock = Locksy::DynamoDB.new(lock_name: 'my_lock', dynamo_client: dynamo_client)
+```
